@@ -38,6 +38,7 @@
     }
     li.folder {
       font-weight: bold;
+      position: relative;
     }
     li.folder::before {
       content: "►";
@@ -46,9 +47,15 @@
       margin-right: 6px;
       transform: rotate(0deg);
       transition: transform 0.15s ease;
+      position: absolute;
+      left: 6px;
+      top: 50%;
+      transform-origin: center;
+      transform: translateY(-50%) rotate(0deg);
     }
     li.folder.open::before {
       content: "▼";
+      transform: translateY(-50%) rotate(0deg);
     }
     li:hover {
       background-color: #444;
@@ -57,9 +64,15 @@
       font-weight: normal;
       background-color: #333;
       cursor: pointer;
+      padding-left: 24px; /* align files with folder text */
     }
     li.file:hover {
       background-color: #555;
+    }
+    span.folder-name {
+      display: inline-block;
+      padding-left: 24px;
+      user-select: none;
     }
   </style>
 </head>
@@ -210,12 +223,18 @@
             window.location.href = encodeURI(parentPath + item);
           });
         } else if (typeof item === "object" && item.name && item.children) {
-          li.textContent = item.name;
           li.classList.add("folder");
-          li.addEventListener("click", e => {
+          
+          // Crear un span para el nombre de la carpeta y asignarle evento click solo a ese span
+          const span = document.createElement("span");
+          span.textContent = item.name;
+          span.classList.add("folder-name");
+          span.addEventListener("click", e => {
             e.stopPropagation();
             li.classList.toggle("open");
           });
+          li.appendChild(span);
+
           li.appendChild(createFolderList(item.children, parentPath + item.name + "/"));
         }
         ul.appendChild(li);
@@ -223,12 +242,12 @@
       return ul;
     }
 
-    // Crear la lista raíz y mostrarla (no ocultar)
     const rootUl = createFolderList(folders);
     rootUl.style.display = "block";
     folderList.appendChild(rootUl);
   </script>
 </body>
 </html>
+
 
 
