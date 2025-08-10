@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Selector de Carpetas y Archivos</title>
+  <style>
+    body {
+      background-color: #111;
+      color: #fff;
+      font-family: "Comic Sans MS", cursive;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    ul {
+      list-style: none;
+      padding-left: 20px;
+      margin: 0;
+    }
+    /* Ocultar solo sublistas, no la raíz */
+    #folder-list ul {
+      display: none; /* ocultar sublistas por defecto */
+      padding-left: 18px;
+      margin-top: 6px;
+    }
+    li.open > ul {
+      display: block; /* mostrar cuando .open */
+    }
+    li {
+      padding: 6px;
+      margin: 3px 0;
+      background-color: #222;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: 0.2s;
+      user-select: none;
+    }
+    li.folder {
+      font-weight: bold;
+    }
+    li.folder::before {
+      content: "►";
+      display: inline-block;
+      width: 18px;
+      margin-right: 6px;
+      transform: rotate(0deg);
+      transition: transform .15s ease;
+    }
+    li.folder.open::before {
+      content: "▼";
+    }
+    li:hover {
+      background-color: #444;
+    }
+    li.file {
+      font-weight: normal;
+      background-color: #333;
+      cursor: pointer;
+    }
+    li.file:hover {
+      background-color: #555;
+    }
+  </style>
+</head>
+<body>
+  <h1>Explorador de Carpetas</h1>
+  <ul id="folder-list"></ul>
+
+  <script>
+    const folders = [
+      {
+        name: "fnaf",
+        children: [
+          "fnaf1.html",
+          "fnaf2.html",
+          "fnaf3.html",
+          "fnaf4.html",
+          "fnafworld.html"
+        ]
+      },
+      {
+        name: "clasicoshtml",
+        children: [
+          "fruitninja.html",
+          "jetpackjoyride.html",
+          "pizzatower.html",
+          "fnf.html",
+          {
+            name: "sm64",
+            children: ["index.html"]
+          }
+        ]
+      },
+      {
+        name: "fullscreengames",
+        children: [
+          {
+            name: "nes",
+            children: ["supermariobros.html","supermariobros2.html","supermariobros3.html","contra.html","castlevania.html","castlevania2.html","castlevania3.html","kirbyadventure.html","digdug.html","megaman.html","megaman2.html","megaman3.html","megaman4.html","megaman5.html","megaman6.html","bomberman.html","bomberman2.html","metalgear.html","metroid.html","punchout.html","tetris.html","tecmobowl.html","drmario.html","thelegendofzelda.html","zelda2.html","adventureisland.html","blastermaster.html","bartvsthespacemutants.html","bartvstheworld.html"]
+          },
+          {
+            name: "gb",
+            children: ["earthwormjimgb.html"]
+          },
+          {
+            name: "segagenesis",
+            children: ["sonic1.html", "sonic2.html","sonicspinball.html","sonic3andknuckles.html","sonic3dblast.html","earthwormjim.html","earthwormjim2.html","boogermanapickandflickadventure.html","rocketknightadventures.html","gunstarheroes.html","goldenaxe.html","streetsofrage.html","streetsofrage2.html","streetsofrage3.html","alteredbeast.html","comixzone.html","ristar.html","toejamearl.html","toejamandearlpaniconfunkotron.html","tazmania.html","coolspot.html","virtualbart.html","toystorydisney.html","mickeymania.html","thesmurfs.html","ultimatemortalkombat3.html","castlevaniabloodlines.html","virtuaracing.html","vectorman.html","vectorman2.html","michaeljacksonmoonwalker.html"]
+          },
+          {
+            name: "snes",
+            children: ["earthwormjimsnes.html","earthwormjim2snes.html"]
+          },
+          {
+            name: "sms",
+            children: ["sonic1sms.html", "sonic2sms.html"]
+          },
+          {
+            name: "gamegear",
+            children: ["sonic1gg.html", "sonic2gg.html"]
+          },
+          {
+            name: "gameboyadvance",
+            children: ["sonic1gba.html", "earthwormjim1gba.html", "earthwormjim2gba.html"]
+          }
+        ]
+      },
+      "undertale.html",
+      "deltarune.html"
+    ];
+
+    const folderList = document.getElementById('folder-list');
+
+    function createFolderList(items, parentPath = "") {
+      const ul = document.createElement('ul');
+      items.forEach(item => {
+        const li = document.createElement('li');
+
+        if (typeof item === "string") {
+          li.textContent = item;
+          li.classList.add("file");
+          li.addEventListener('click', (e) => {
+            e.stopPropagation();
+            window.location.href = encodeURI(parentPath + item);
+          });
+        } 
+        else if (typeof item === "object" && item.name && item.children) {
+          li.textContent = item.name;
+          li.classList.add("folder");
+          li.addEventListener('click', (e) => {
+            e.stopPropagation();
+            li.classList.toggle("open");
+          });
+          li.appendChild(createFolderList(item.children, parentPath + item.name + "/"));
+        }
+        ul.appendChild(li);
+      });
+      return ul;
+    }
+
+    // Crear la lista y mostrar el nivel raíz
+    const rootUl = createFolderList(folders);
+    rootUl.style.display = "block";
+    folderList.appendChild(rootUl);
+  </script>
+</body>
+</html>
