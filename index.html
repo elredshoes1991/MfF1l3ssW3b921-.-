@@ -37,9 +37,9 @@
     li.folder {
       font-weight: bold;
       position: relative;
-      cursor: default;
+      cursor: pointer; /* Cambiado de default a pointer */
     }
-    /* El icono antes del nombre */
+    /* Icono antes del nombre, siempre ► y rota */
     li.folder > span.folder-name::before {
       content: "►";
       display: inline-block;
@@ -47,17 +47,20 @@
       margin-right: 6px;
       transition: transform 0.2s ease;
       transform-origin: center;
-    }
-    li.open > span.folder-name::before {
-      content: "▼";
       transform: rotate(0deg);
+      color: #ccc;
+    }
+    /* Rota la flecha al abrir */
+    li.open > span.folder-name::before {
+      transform: rotate(90deg);
+      color: #0f0;
     }
     li.folder:hover {
       background-color: #444;
-      cursor: pointer;
     }
     span.folder-name {
       padding-left: 6px;
+      user-select: none;
     }
     li.file {
       font-weight: normal;
@@ -212,9 +215,16 @@
         if (typeof item === "string") {
           li.textContent = item;
           li.classList.add("file");
+          li.tabIndex = 0; // para accesibilidad
           li.addEventListener("click", e => {
             e.stopPropagation();
             window.location.href = encodeURI(parentPath + item);
+          });
+          li.addEventListener("keydown", e => {
+            if(e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              window.location.href = encodeURI(parentPath + item);
+            }
           });
         } else if (typeof item === "object" && item.name && item.children) {
           li.classList.add("folder");
@@ -222,11 +232,18 @@
           const span = document.createElement("span");
           span.textContent = item.name;
           span.classList.add("folder-name");
+          span.tabIndex = 0; // accesible con teclado
 
           // Evento para abrir/cerrar carpeta solo en el span del nombre
           span.addEventListener("click", e => {
             e.stopPropagation();
             li.classList.toggle("open");
+          });
+          span.addEventListener("keydown", e => {
+            if(e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              li.classList.toggle("open");
+            }
           });
 
           li.appendChild(span);
