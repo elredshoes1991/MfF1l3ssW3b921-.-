@@ -18,14 +18,11 @@
       padding-left: 20px;
       margin: 0;
     }
-    /* Ocultar solo sublistas, no la raíz */
+    /* Mostrar siempre todas las sublistas */
     #folder-list ul {
-      display: none;
+      display: block !important; /* Siempre visibles */
       padding-left: 18px;
       margin-top: 6px;
-    }
-    li.open > ul {
-      display: block;
     }
     li {
       padding: 6px;
@@ -37,22 +34,22 @@
     li.folder {
       font-weight: bold;
       position: relative;
-      cursor: default; /* Cambiado a default porque no se puede cerrar */
+      cursor: default; /* No es clickeable */
     }
-    /* Icono antes del nombre, siempre ► y rota */
+    /* Flecha siempre rotada 90°, sin transición ni animación */
     li.folder > span.folder-name::before {
       content: "►";
       display: inline-block;
       width: 18px;
       margin-right: 6px;
-      transition: transform 0.2s ease;
       transform-origin: center;
-      transform: rotate(90deg); /* Siempre abierta, rota 90° */
+      transform: rotate(90deg);
       color: #0f0;
+      transition: none; /* Sin animación */
     }
     li.folder:hover {
       background-color: #444;
-      cursor: default; /* Sin pointer porque no es clickeable */
+      cursor: default;
     }
     span.folder-name {
       padding-left: 6px;
@@ -224,14 +221,12 @@
           });
         } else if (typeof item === "object" && item.name && item.children) {
           li.classList.add("folder");
-          li.classList.add("open"); // siempre abierta
+          // No toggle, no toggle event, no class 'open'
 
           const span = document.createElement("span");
           span.textContent = item.name;
           span.classList.add("folder-name");
           span.tabIndex = 0; // accesible con teclado
-
-          // Sin eventos para abrir/cerrar, carpetas no se pueden cerrar
 
           li.appendChild(span);
           li.appendChild(createFolderList(item.children, parentPath + item.name + "/"));
