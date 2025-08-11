@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -48,9 +48,17 @@
       background-color: #333;
       cursor: pointer;
       padding-left: 24px; /* alinear con carpetas */
+      position: relative;
     }
     li.file:hover {
       background-color: #555;
+    }
+    li.file::before {
+      content: "📄";
+      position: absolute;
+      left: 6px;
+      top: 6px;
+      user-select: none;
     }
   </style>
 </head>
@@ -190,7 +198,7 @@
 
     function createFolderList(items, parentPath = "") {
       const ul = document.createElement("ul");
-      ul.style.display = "block"; // asegurar que la lista siempre esté visible
+      ul.style.display = "block"; // siempre visible
       items.forEach(item => {
         const li = document.createElement("li");
 
@@ -200,12 +208,14 @@
           li.tabIndex = 0;
           li.addEventListener("click", e => {
             e.stopPropagation();
-            window.location.href = encodeURI(parentPath + item);
+
+            // Abre en una nueva pestaña para evitar problemas con rutas locales
+            window.open(encodeURI(parentPath + item), '_blank');
           });
           li.addEventListener("keydown", e => {
             if(e.key === "Enter" || e.key === " ") {
               e.preventDefault();
-              window.location.href = encodeURI(parentPath + item);
+              window.open(encodeURI(parentPath + item), '_blank');
             }
           });
         } else if (typeof item === "object" && item.name && item.children) {
