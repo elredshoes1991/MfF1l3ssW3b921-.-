@@ -37,7 +37,7 @@
     li.folder {
       font-weight: bold;
       position: relative;
-      cursor: pointer; /* Cambiado de default a pointer */
+      cursor: default; /* Cambiado a default porque no se puede cerrar */
     }
     /* Icono antes del nombre, siempre ► y rota */
     li.folder > span.folder-name::before {
@@ -47,16 +47,12 @@
       margin-right: 6px;
       transition: transform 0.2s ease;
       transform-origin: center;
-      transform: rotate(0deg);
-      color: #ccc;
-    }
-    /* Rota la flecha al abrir */
-    li.open > span.folder-name::before {
-      transform: rotate(90deg);
+      transform: rotate(90deg); /* Siempre abierta, rota 90° */
       color: #0f0;
     }
     li.folder:hover {
       background-color: #444;
+      cursor: default; /* Sin pointer porque no es clickeable */
     }
     span.folder-name {
       padding-left: 6px;
@@ -228,23 +224,14 @@
           });
         } else if (typeof item === "object" && item.name && item.children) {
           li.classList.add("folder");
+          li.classList.add("open"); // siempre abierta
 
           const span = document.createElement("span");
           span.textContent = item.name;
           span.classList.add("folder-name");
           span.tabIndex = 0; // accesible con teclado
 
-          // Evento para abrir/cerrar carpeta solo en el span del nombre
-          span.addEventListener("click", e => {
-            e.stopPropagation();
-            li.classList.toggle("open");
-          });
-          span.addEventListener("keydown", e => {
-            if(e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              li.classList.toggle("open");
-            }
-          });
+          // Sin eventos para abrir/cerrar, carpetas no se pueden cerrar
 
           li.appendChild(span);
           li.appendChild(createFolderList(item.children, parentPath + item.name + "/"));
@@ -260,4 +247,3 @@
   </script>
 </body>
 </html>
-
