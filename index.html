@@ -17,12 +17,7 @@
       list-style: none;
       padding-left: 20px;
       margin: 0;
-    }
-    /* Mostrar siempre todas las sublistas */
-    #folder-list ul {
-      display: block !important; /* Siempre visibles */
-      padding-left: 18px;
-      margin-top: 6px;
+      display: block !important; /* siempre visibles */
     }
     li {
       padding: 6px;
@@ -34,22 +29,15 @@
     li.folder {
       font-weight: bold;
       position: relative;
-      cursor: default; /* No es clickeable */
+      cursor: default;
     }
-    /* Flecha siempre rotada 90°, sin transición ni animación */
     li.folder > span.folder-name::before {
-      content: "►";
+      content: "▼"; /* flecha hacia abajo fija */
       display: inline-block;
       width: 18px;
       margin-right: 6px;
-      transform-origin: center;
-      transform: rotate(90deg);
       color: #0f0;
-      transition: none; /* Sin animación */
-    }
-    li.folder:hover {
-      background-color: #444;
-      cursor: default;
+      user-select: none;
     }
     span.folder-name {
       padding-left: 6px;
@@ -202,13 +190,14 @@
 
     function createFolderList(items, parentPath = "") {
       const ul = document.createElement("ul");
+      ul.style.display = "block"; // asegurar que la lista siempre esté visible
       items.forEach(item => {
         const li = document.createElement("li");
 
         if (typeof item === "string") {
           li.textContent = item;
           li.classList.add("file");
-          li.tabIndex = 0; // para accesibilidad
+          li.tabIndex = 0;
           li.addEventListener("click", e => {
             e.stopPropagation();
             window.location.href = encodeURI(parentPath + item);
@@ -221,12 +210,11 @@
           });
         } else if (typeof item === "object" && item.name && item.children) {
           li.classList.add("folder");
-          // No toggle, no toggle event, no class 'open'
 
           const span = document.createElement("span");
           span.textContent = item.name;
           span.classList.add("folder-name");
-          span.tabIndex = 0; // accesible con teclado
+          span.tabIndex = 0;
 
           li.appendChild(span);
           li.appendChild(createFolderList(item.children, parentPath + item.name + "/"));
@@ -236,9 +224,7 @@
       return ul;
     }
 
-    const rootUl = createFolderList(folders);
-    rootUl.style.display = "block";
-    folderList.appendChild(rootUl);
+    folderList.appendChild(createFolderList(folders));
   </script>
 </body>
 </html>
