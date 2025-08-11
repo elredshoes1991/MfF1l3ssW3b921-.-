@@ -20,59 +20,53 @@
     }
     /* Ocultar solo sublistas, no la raíz */
     #folder-list ul {
-      display: none; /* ocultar sublistas por defecto */
+      display: none;
       padding-left: 18px;
       margin-top: 6px;
     }
     li.open > ul {
-      display: block; /* mostrar cuando .open */
+      display: block;
     }
     li {
       padding: 6px;
       margin: 3px 0;
       background-color: #222;
       border-radius: 5px;
-      cursor: pointer;
-      transition: 0.2s;
       user-select: none;
     }
     li.folder {
       font-weight: bold;
       position: relative;
+      cursor: default;
     }
-    li.folder::before {
+    /* El icono antes del nombre */
+    li.folder > span.folder-name::before {
       content: "►";
       display: inline-block;
       width: 18px;
       margin-right: 6px;
-      transform: rotate(0deg);
-      transition: transform 0.15s ease;
-      position: absolute;
-      left: 6px;
-      top: 50%;
+      transition: transform 0.2s ease;
       transform-origin: center;
-      transform: translateY(-50%) rotate(0deg);
     }
-    li.folder.open::before {
+    li.open > span.folder-name::before {
       content: "▼";
-      transform: translateY(-50%) rotate(0deg);
+      transform: rotate(0deg);
     }
-    li:hover {
+    li.folder:hover {
       background-color: #444;
+      cursor: pointer;
+    }
+    span.folder-name {
+      padding-left: 6px;
     }
     li.file {
       font-weight: normal;
       background-color: #333;
       cursor: pointer;
-      padding-left: 24px; /* align files with folder text */
+      padding-left: 24px; /* alinear con carpetas */
     }
     li.file:hover {
       background-color: #555;
-    }
-    span.folder-name {
-      display: inline-block;
-      padding-left: 24px;
-      user-select: none;
     }
   </style>
 </head>
@@ -224,17 +218,18 @@
           });
         } else if (typeof item === "object" && item.name && item.children) {
           li.classList.add("folder");
-          
-          // Crear un span para el nombre de la carpeta y asignarle evento click solo a ese span
+
           const span = document.createElement("span");
           span.textContent = item.name;
           span.classList.add("folder-name");
+
+          // Evento para abrir/cerrar carpeta solo en el span del nombre
           span.addEventListener("click", e => {
             e.stopPropagation();
             li.classList.toggle("open");
           });
-          li.appendChild(span);
 
+          li.appendChild(span);
           li.appendChild(createFolderList(item.children, parentPath + item.name + "/"));
         }
         ul.appendChild(li);
@@ -248,6 +243,3 @@
   </script>
 </body>
 </html>
-
-
-
